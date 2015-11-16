@@ -33,7 +33,10 @@ public class Experiment {
 					if(b2) sLabels.add(label1); else sLabels.add(label2);
 				} else {
 					String s[] = line.split(";");
-					if(s.length > 1) sLabels.add(s[0] +";"+ s[1]);
+					if(s.length > 1) 
+					{	
+						if(b2) sLabels.add(s[0]); else sLabels.add(s[1]);
+					}
 				}
 				count++;
 			}
