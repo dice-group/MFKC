@@ -35,7 +35,6 @@ public class MFKCHash {
 		Map<Character, Integer> ht = hash(t);
 		if(minMaxSkip(hs,ht,threshold, k))
 		{
-			System.out.println("MinMaxSkip: " + s + ";" + t);
 			return;
 		}
 		for (Character c : hs.keySet()) {
@@ -46,10 +45,10 @@ public class MFKCHash {
 			sk[count] = (double)nSim / ((double)s.length()+(double)t.length());
 			if(sk[count] >= threshold)
 			{
-				lstGoodPairs.add(s + ";" + t +";sim=" + sk[count] + ";HashCharCount=" + (count+1) + " from " + Math.max(hs.size(), ht.size()));
+				lstGoodPairs.add(s + ";" + t);
 				return;
 			}
-//			if(count > 0)
+//			if(count > 0) // Floating-point Equality
 //			{
 //				if((Math.abs(sk[count]) - Math.abs(sk[count-1]))/Math.abs(sk[count]) < ell)
 //					return;
