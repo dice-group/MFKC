@@ -15,6 +15,7 @@ public class MFKCHash {
 	private static List<String> lstGoodPairs = new ArrayList<String>();
 	public static List<String> SDF(Set<String> Ds, Set<String> Dt, double threshold, int k)
 	{
+		lstGoodPairs.add("label1;label2;scoreThreshold;K_hash;total_K_lHash");
 		for (String s : Ds) {
 			Map<Character, Integer> hs = hash(s);
 			for (String t : Dt) {
@@ -35,6 +36,8 @@ public class MFKCHash {
 		Map<Character, Integer> ht = hash(t);
 		if(minMaxSkip(hs,ht,threshold, k))
 		{
+			//System.out.println("MinMaxSkip: " + s + ";" + t);
+			NewSDF.minMaxSkip++;
 			return;
 		}
 		for (Character c : hs.keySet()) {
@@ -45,10 +48,10 @@ public class MFKCHash {
 			sk[count] = (double)nSim / ((double)s.length()+(double)t.length());
 			if(sk[count] >= threshold)
 			{
-				lstGoodPairs.add(s + ";" + t);
+				lstGoodPairs.add(s + ";" + t +";" + sk[count] + ";" + (count+1) + ";" + Math.max(hs.size(), ht.size()));
 				return;
 			}
-//			if(count > 0) // Floating-point Equality
+//			if(count > 0)
 //			{
 //				if((Math.abs(sk[count]) - Math.abs(sk[count-1]))/Math.abs(sk[count]) < ell)
 //					return;
