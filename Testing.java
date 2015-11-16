@@ -232,7 +232,7 @@ public class Testing {
 		//for(int k=1;k<200;k++)
 		//{
 			int k=500;
-			double threshold=0.8;
+			double threshold=1.0;
 			List<String> lst = Experiment.generateExperiment(f1, 6, true, k, threshold);
 		//}
 		System.out.println("Total of good pairs: " + lst.size());
