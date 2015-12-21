@@ -26,10 +26,6 @@ public class SimMFKC1 {
 				bExit=false;
 				if(s.equals(t))
 				{	
-					if(bExit)
-					{	
-						System.err.println("Problem:");
-					}
 					cEqual++;
 					lstGoodPairs.add(s + ";" + t + ";" + 1);
 					bExit=true;
@@ -40,11 +36,6 @@ public class SimMFKC1 {
 				
 				if(intersec.size() == 0)
 				{	// Hash intesection Filter
-					if(bExit)
-					{	
-						System.err.println("Problem:");
-					}
-					
 					cIntersecFilter++;
 					lstBadPairs.add(s + ";" + t + ";" + "intersecFilter");
 					bExit=true;
@@ -53,10 +44,6 @@ public class SimMFKC1 {
 				
 				if(Math.abs(hs.size() - ht.size()) >= intersec.size())
 				{	// Diff Filter
-					if(bExit)
-					{	
-						System.err.println("Problem: Equals");
-					}
 					cDiffFilter++;
 					lstBadPairs.add(s + ";" + t + ";" + "DiffFilter");
 					bExit=true;
@@ -73,10 +60,6 @@ public class SimMFKC1 {
 					sim[i] = sumFreq / ((double)(s.length() + t.length()));
 					if(sim[i] >= threshold)
 					{
-						if(bExit)
-						{	
-							System.err.println("Problem:");
-						}
 						cGood++;
 						lstGoodPairs.add(s + ";" + t +";" + sim[i] + ";" + (i+1) + ";" + intersec.size());
 						bExit=true;
@@ -92,12 +75,6 @@ public class SimMFKC1 {
 				}
 			}
 		}
-		System.out.println("##########TOTALLLLLLLLLL = " + count);
-		System.out.println("equal: " + cEqual);
-		System.out.println("hashIntersec: " + cIntersecFilter);
-		System.out.println("DiffFilter: " + cDiffFilter);
-		System.out.println("mfcFilter: " + cMFCFilter);
-		System.out.println("GoodPairs: " + cGood);
 	}
 	
 	private static Map<Character, Integer> getIntersec(Map<Character, Integer> hs, Map<Character, Integer> ht) {
