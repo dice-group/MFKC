@@ -21,7 +21,7 @@ public class TableGenerator {
 		File fds = new File("D:\\task_axel1\\dbPediaPlaces.tsv");
 		File fdt = new File("D:\\task_axel1\\linkedGeoPlaces_million.tsv");
 		//32=1,000 -  105=10,000 - 343=100,000 - 1249=1,000,000 - 3900=10,000,000
-		int size=1249;
+		int size=32;
 		Set<String> ds = getLabels(fds, size);
 		Set<String> dt = getLabels(fdt, size);
 		generateTable(ds, dt, size);
@@ -102,45 +102,45 @@ public class TableGenerator {
 				sb.append(sum + "	");
 
 				try {
-					sb.append((double) (Math.abs(s.length() - t.length()) / (s.length() + t.length()))
+					sb.append((double) (Math.abs(s.length() - t.length()) / (double)(s.length() + t.length()))
 							+ "	");
 				} catch(Exception e) {
-					sb.append("-1	");
+					sb.append("NaN	");
 				}
 				
 				try {
-					sb.append((double) (s.length() + t.length()) / (Math.abs(s.length() - t.length()))
+					sb.append((double) (s.length() + t.length()) / (double)(Math.abs(s.length() - t.length()))
 							+ "	");
 				} catch(Exception e) {
-					sb.append("-1	");
+					sb.append("NaN	");
 				}
 
 				try {
-					sb.append((double) (intersec.size() / (s.length() - t.length()))
+					sb.append((double) (intersec.size() / (double)(s.length() - t.length()))
 							+ "	");
 				} catch(Exception e) {
-					sb.append("-1	");
+					sb.append("NaN	");
 				}
 				
 				try {
-					sb.append((double) (Math.abs(s.length() - t.length()) / (intersec.size()))
+					sb.append((double) (Math.abs(s.length() - t.length()) /  (double)(intersec.size()))
 							+ "	");
 				} catch(Exception e) {
-					sb.append("-1	");
+					sb.append("NaN	");
 				}
 
 				try {
 					sb.append(
-							(double) (intersec.size() / (s.length() + t.length())) + "	");
+							(double) (intersec.size() / (double) (s.length() + t.length())) + "	");
 				} catch(Exception e) {
-					sb.append("-1	");
+					sb.append("NaN	");
 				}
 
 				try {
-					sb.append((double) ((s.length() + t.length()) / (intersec.size()))
+					sb.append((double) ((s.length() + t.length()) /  (double)(intersec.size()))
 							+ "	");
 				} catch(Exception e) {
-					sb.append("-1	");
+					sb.append("NaN	");
 				}
 				sb.append("\n");
 			}
