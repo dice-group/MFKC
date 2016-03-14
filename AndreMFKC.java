@@ -1,5 +1,3 @@
-package aksw.sim.proof;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,24 +9,31 @@ import java.util.Set;
 
 public class AndreMFKC {
 
-	static int D, L, N, A, good;
-
+	static int D, L, N, A, good, AF_D, AF_L;
+	static int count;
 	public static void SDF(Set<String> Ds, Set<String> Dt, double threshold, int k) {
 		boolean bExit = false;
+
 		for (String s : Ds) {
 			Map<Character, Integer> hs = hash(s);
 			for (String t : Dt) {
-
-				if (Math.abs((s.length() - t.length())) > 0) {
-					double lFilter = (double) (Math.abs(s.length() - t.length())) / (double) (s.length() + t.length());
-					if (lFilter >= threshold) {
+				count++;
+				bExit = false;
+				Map<Character, Integer> ht = hash(t);
+				
+				if(t.length() <= s.length())
+				{
+					int h1s=(int)hs.values().toArray()[0];
+					double vFilter=((((double)h1s * (double)ht.size())+(double)t.length())/(double)(s.length() + t.length()));
+					if(vFilter < threshold)
+					{
 						D++;
 						bExit = true;
 						continue;
 					}
 				}
-				bExit = false;
-				Map<Character, Integer> ht = hash(t);
+				AF_D++;
+				
 				Map<Character, Integer> intersec = getIntersec(hs, ht);
 
 				if (intersec.size() == 0) { // Hash intesection Filter
@@ -36,21 +41,7 @@ public class AndreMFKC {
 					bExit = true;
 					continue;
 				}
-
-				if (Math.abs((s.length() - t.length())) > 0) {
-					double diff = (double) intersec.size() / (Math.abs((double) (s.length() - t.length())));
-					if (diff < threshold) {
-						N++;
-						bExit = true;
-						continue;
-					}
-				}
-				// if(Math.abs(hs.size() - ht.size()) >= intersec.size())
-				// { // Diff Filter
-				// //N++;
-				// bExit=true;
-				// continue;
-				// }
+				AF_L++;
 
 				int i = 0;
 				double sumFreq = 0.0d;
