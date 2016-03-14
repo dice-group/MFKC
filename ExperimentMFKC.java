@@ -1,25 +1,22 @@
-package aksw.sim.proof;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
 import org.apache.jena.riot.WebContent;
-import org.apache.jena.sparql.engine.http.QueryEngineHTTP;
-import org.apache.jena.sparql.engine.http.QueryExceptionHTTP;
+
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
+import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP;
 
 public class ExperimentMFKC {
-
-	private static int ct;
 
 	public static Set<String> getLabels(File pFile, int limit) {
 		Set<String> sLabels = new LinkedHashSet<String>();
@@ -135,12 +132,11 @@ public class ExperimentMFKC {
 		return sRet;
 	}
 
-	
-	public static void generateExperiment(File pFile, int limit, boolean generateFile, int k, double threshold) {
+	public static void generateExperiment(File fds, File fdt,  int limit, boolean generateFile, int k, double threshold) {
+		
 		try {
-			Set<String> ds = getLabels(pFile, realLimit, generateFile, false);
-			Set<String> dt = getLabels(pFile, realLimit, generateFile, true);
-			int realLimit=ds.size()*dt.size(); //because is a Cartesian product
+			Set<String> ds = getLabels(fds, limit);
+			Set<String> dt = getLabels(fdt, limit);
 			
 			long startTime = System.currentTimeMillis();		
 			long endTime = System.currentTimeMillis();
@@ -150,30 +146,50 @@ public class ExperimentMFKC {
 			AndreMFKC.SDF(ds, dt, threshold, k);
 			endTime = System.currentTimeMillis();
 			totalTime = endTime - startTime;
-			System.out.println(" ++++++++ AndreMFKC, , TotalTime for " + (realLimit) + " comparisons is: " + totalTime);
+			System.out.println("TotalTime is: " + totalTime);
+			System.out.println("Total pairs: " + AndreMFKC.count);
+			System.out.println("D="+AndreMFKC.D);
+			System.out.println("L="+AndreMFKC.L);
+			System.out.println("A="+AndreMFKC.A);
+			System.out.println("Good="+AndreMFKC.good);
+			System.out.println("AF_D="+AndreMFKC.AF_D);
+			System.out.println("AF_L="+AndreMFKC.AF_L);
+			System.out.println("Precision Filter D="+new BigDecimal(AndreMFKC.good / (double)AndreMFKC.AF_D));
+			System.out.println("Precision Filter L="+new BigDecimal(AndreMFKC.good / (double)AndreMFKC.AF_L));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
-	public static void generateExperiment(File fds, File fdt,  int limit, boolean generateFile, int k, double threshold) {
+	
+public static void generateExperiment(int k, double threshold) {
 		
-		int realLimit=0;
 		try {
-			Set<String> ds = getLabels(fds, limit);
-			Set<String> dt = getLabels(fdt, limit);
-			realLimit=ds.size()*dt.size(); //because is a Cartesian product
+			Set<String> ds = new HashSet<String>();
+			Set<String> dt = new HashSet<String>();
+			ds.add("Wari culture");
+			ds.add("Chrabrany");
+			ds.add("Accum");
+			ds.add("Jaintia Kingdom");
+			ds.add("Dominion of Melchizedek");
 			
-			long startTime = System.currentTimeMillis();		
-			long endTime = System.currentTimeMillis();
-			long totalTime = endTime - startTime;
+			dt.add("Wari culture");
+			dt.add("Chrabrany");
+			dt.add("Accum");
+			dt.add("Kingdom of Kano");
+			dt.add("Dominion of Melchizedek");
 			
-			startTime = System.currentTimeMillis();
 			AndreMFKC.SDF(ds, dt, threshold, k);
-			endTime = System.currentTimeMillis();
-			totalTime = endTime - startTime;
-			System.out.println(" ++++++++ AndreMFKC, , TotalTime for " + (realLimit) + " comparisons is: " + totalTime);
+			System.out.println("Total pairs: " + AndreMFKC.count);
+			System.out.println("D="+AndreMFKC.D);
+			System.out.println("L="+AndreMFKC.L);
+			System.out.println("A="+AndreMFKC.A);
+			System.out.println("Good="+AndreMFKC.good);
+			System.out.println("AF_D="+AndreMFKC.AF_D);
+			System.out.println("AF_L="+AndreMFKC.AF_L);
+			
+			System.out.println("Precision Filter D="+(double)((double)AndreMFKC.good / (double)AndreMFKC.AF_D));
+			System.out.println("Precision Filter L="+(double)((double)AndreMFKC.good / (double)AndreMFKC.AF_L));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
