@@ -7,30 +7,69 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class AndreMFKC {
+public class AndreMFKC_Sep {
 
 	static int D, L, N, A, good, AF_N, AF_L;
+	static int count;
 
-	public static void SDF(Set<String> Ds, Set<String> Dt, double threshold,
-			int k) {
+	public static void SDF_N_A(Set<String> Ds, Set<String> Dt,
+			double threshold, int k) {
 		boolean bExit = false;
-				
+
 		for (String s : Ds) {
-			Map<Character, Integer> hs = hash(s);
+			Map<Character, Integer> hs = hash(s,k);
 			for (String t : Dt) {
+				count++;
 				bExit = false;
 				
-				Map<Character, Integer> ht = hash(t);
-				
 				int h1s = (int) hs.values().toArray()[0];
-				double vFilter = ((((double) h1s * (double) ht.size()) + (double) t
+				double vFilter = ((((double) h1s * (double) k) + (double) t
 						.length()) / (double) (s.length() + t.length()));
 				if (vFilter < threshold) {
-					N++;
+					D++;
 					bExit = true;
 					continue;
 				}
 				AF_N++;
+				
+				Map<Character, Integer> ht = hash(t,k);
+
+				Map<Character, Integer> intersec = getIntersec(hs, ht);
+
+				int i = 0;
+				double sumFreq = 0.0d;
+				double sim[] = new double[intersec.size()];
+				for (Character c : intersec.keySet()) {
+					if (i >= k)
+						break;
+
+					sumFreq += intersec.get(c).doubleValue();
+					sim[i] = sumFreq / ((double) (s.length() + t.length()));
+					if (sim[i] >= threshold) {
+						good++;
+						bExit = true;
+						break;
+					}
+					i++;
+				}
+				if (bExit == false) {
+					A++;
+					bExit = true;
+				}
+			}
+		}
+	}
+
+	public static void SDF_L_A(Set<String> Ds, Set<String> Dt,
+			double threshold, int k) {
+		boolean bExit = false;
+
+		for (String s : Ds) {
+			Map<Character, Integer> hs = hash(s,k);
+			for (String t : Dt) {
+				count++;
+				bExit = false;
+				Map<Character, Integer> ht = hash(t,k);
 
 				Map<Character, Integer> intersec = getIntersec(hs, ht);
 
@@ -65,33 +104,41 @@ public class AndreMFKC {
 		}
 	}
 
-	/*
-	 * Return the similarity,
-	 * 
-	 * @return value between 0 and 1 You should convert to get 0% to 100%, just
-	 * similarity * 100.
-	 */
-	public static double sim(String s, String t, int k) {
-		Map<Character, Integer> hs = hash(s);
-		Map<Character, Integer> ht = hash(t);
-		Map<Character, Integer> intersec = getIntersec(hs, ht);
+	public static void SDF_A(Set<String> Ds, Set<String> Dt, double threshold,
+			int k) {
+		boolean bExit = false;
 
-		if (intersec.size() == 0) { // Hash intesection Filter
-			return 0.0d;
-		}
+		for (String s : Ds) {
+			Map<Character, Integer> hs = hash(s,k);
+			for (String t : Dt) {
+				count++;
+				bExit = false;
+				Map<Character, Integer> ht = hash(t,k);
 
-		int i = 0;
-		double sumFreq = 0.0d;
-		double sim[] = new double[intersec.size()];
-		for (Character c : intersec.keySet()) {
-			if (i >= k) {
-				return sim[i - 1];
+				Map<Character, Integer> intersec = getIntersec(hs, ht);
+
+				int i = 0;
+				double sumFreq = 0.0d;
+				double sim[] = new double[intersec.size()];
+				for (Character c : intersec.keySet()) {
+					if (i >= k)
+						break;
+
+					sumFreq += intersec.get(c).doubleValue();
+					sim[i] = sumFreq / ((double) (s.length() + t.length()));
+					if (sim[i] >= threshold) {
+						good++;
+						bExit = true;
+						break;
+					}
+					i++;
+				}
+				if (bExit == false) {
+					A++;
+					bExit = true;
+				}
 			}
-			sumFreq += intersec.get(c).doubleValue();
-			sim[i] = sumFreq / ((double) (s.length() + t.length()));
-			i++;
 		}
-		return sim[sim.length - 1];
 	}
 
 	private static Map<Character, Integer> getIntersec(
@@ -135,7 +182,7 @@ public class AndreMFKC {
 	 * @return sorted HashMap
 	 */
 	private static <K, V extends Comparable<? super V>> HashMap<K, V> descendingSortByValues(
-			HashMap<K, V> map) {
+			HashMap<K, V> map, int k) {
 
 		List<Map.Entry<K, V>> list = new ArrayList<Map.Entry<K, V>>(
 				map.entrySet());
@@ -149,8 +196,12 @@ public class AndreMFKC {
 		// Here I am copying the sorted list in HashMap
 		// using LinkedHashMap to preserve the insertion order
 		HashMap<K, V> sortedHashMap = new LinkedHashMap<K, V>();
+		int i = 1;
 		for (Map.Entry<K, V> entry : list) {
-			sortedHashMap.put(entry.getKey(), entry.getValue());
+			if (i <= k){
+				i++;
+				sortedHashMap.put(entry.getKey(), entry.getValue());
+			}
 		}
 		return sortedHashMap;
 	}
@@ -162,13 +213,13 @@ public class AndreMFKC {
 	 *            to be hashed.
 	 * @return Sorted HashMap with Char and frequencies.
 	 */
-	private static Map<Character, Integer> hash(String s) {
+	private static Map<Character, Integer> hash(String s, int pk) {
+		int k=Math.min(s.length(), pk);
 		HashMap<Character, Integer> countMap = countElementOcurrences(s
 				.toCharArray());
 		// System.out.println(countMap);
-		Map<Character, Integer> map = descendingSortByValues(countMap);
+		Map<Character, Integer> map = descendingSortByValues(countMap, k);
 		// System.out.println(map);
-		
 		return map;
 	}
 }

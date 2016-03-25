@@ -7,30 +7,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class AndreMFKC {
+public class AndreMFKC_new {
 
 	static int D, L, N, A, good, AF_N, AF_L;
+	static int  k;
 
 	public static void SDF(Set<String> Ds, Set<String> Dt, double threshold,
-			int k) {
+			int pk) {
 		boolean bExit = false;
 				
 		for (String s : Ds) {
-			Map<Character, Integer> hs = hash(s);
+			Map<Character, Integer> hs = hash(s,pk);
 			for (String t : Dt) {
 				bExit = false;
-				
-				Map<Character, Integer> ht = hash(t);
-				
+				Map<Character, Integer> ht = hash(t,pk);
 				int h1s = (int) hs.values().toArray()[0];
-				double vFilter = ((((double) h1s * (double) ht.size()) + (double) t
+				double vFilter = ((((double) h1s * (double) k) + (double) t
 						.length()) / (double) (s.length() + t.length()));
+
+				
 				if (vFilter < threshold) {
+					//System.out.println("N: " + s + ", " + t);
 					N++;
 					bExit = true;
 					continue;
 				}
 				AF_N++;
+				
+				
 
 				Map<Character, Integer> intersec = getIntersec(hs, ht);
 
@@ -72,8 +76,8 @@ public class AndreMFKC {
 	 * similarity * 100.
 	 */
 	public static double sim(String s, String t, int k) {
-		Map<Character, Integer> hs = hash(s);
-		Map<Character, Integer> ht = hash(t);
+		Map<Character, Integer> hs = hash(s,k);
+		Map<Character, Integer> ht = hash(t,k);
 		Map<Character, Integer> intersec = getIntersec(hs, ht);
 
 		if (intersec.size() == 0) { // Hash intesection Filter
@@ -135,7 +139,7 @@ public class AndreMFKC {
 	 * @return sorted HashMap
 	 */
 	private static <K, V extends Comparable<? super V>> HashMap<K, V> descendingSortByValues(
-			HashMap<K, V> map) {
+			HashMap<K, V> map, int k) {
 
 		List<Map.Entry<K, V>> list = new ArrayList<Map.Entry<K, V>>(
 				map.entrySet());
@@ -149,8 +153,12 @@ public class AndreMFKC {
 		// Here I am copying the sorted list in HashMap
 		// using LinkedHashMap to preserve the insertion order
 		HashMap<K, V> sortedHashMap = new LinkedHashMap<K, V>();
+		int i = 1;
 		for (Map.Entry<K, V> entry : list) {
-			sortedHashMap.put(entry.getKey(), entry.getValue());
+			if (i <= k){
+				i++;
+				sortedHashMap.put(entry.getKey(), entry.getValue());
+			}
 		}
 		return sortedHashMap;
 	}
@@ -162,11 +170,12 @@ public class AndreMFKC {
 	 *            to be hashed.
 	 * @return Sorted HashMap with Char and frequencies.
 	 */
-	private static Map<Character, Integer> hash(String s) {
+	private static Map<Character, Integer> hash(String s, int pk) {
 		HashMap<Character, Integer> countMap = countElementOcurrences(s
 				.toCharArray());
 		// System.out.println(countMap);
-		Map<Character, Integer> map = descendingSortByValues(countMap);
+		k=Math.min(countMap.size(), pk);
+		Map<Character, Integer> map = descendingSortByValues(countMap, k);
 		// System.out.println(map);
 		
 		return map;
