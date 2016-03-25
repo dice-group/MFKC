@@ -9,31 +9,29 @@ import java.util.Set;
 
 public class AndreMFKC {
 
-	static int D, L, N, A, good, AF_D, AF_L;
-	static int count;
-	public static void SDF(Set<String> Ds, Set<String> Dt, double threshold, int k) {
-		boolean bExit = false;
+	static int D, L, N, A, good, AF_N, AF_L;
 
+	public static void SDF(Set<String> Ds, Set<String> Dt, double threshold,
+			int k) {
+		boolean bExit = false;
+				
 		for (String s : Ds) {
 			Map<Character, Integer> hs = hash(s);
 			for (String t : Dt) {
-				count++;
 				bExit = false;
+				
 				Map<Character, Integer> ht = hash(t);
 				
-				if(t.length() <= s.length())
-				{
-					int h1s=(int)hs.values().toArray()[0];
-					double vFilter=((((double)h1s * (double)ht.size())+(double)t.length())/(double)(s.length() + t.length()));
-					if(vFilter < threshold)
-					{
-						D++;
-						bExit = true;
-						continue;
-					}
+				int h1s = (int) hs.values().toArray()[0];
+				double vFilter = ((((double) h1s * (double) ht.size()) + (double) t
+						.length()) / (double) (s.length() + t.length()));
+				if (vFilter < threshold) {
+					N++;
+					bExit = true;
+					continue;
 				}
-				AF_D++;
-				
+				AF_N++;
+
 				Map<Character, Integer> intersec = getIntersec(hs, ht);
 
 				if (intersec.size() == 0) { // Hash intesection Filter
@@ -67,7 +65,37 @@ public class AndreMFKC {
 		}
 	}
 
-	private static Map<Character, Integer> getIntersec(Map<Character, Integer> hs, Map<Character, Integer> ht) {
+	/*
+	 * Return the similarity,
+	 * 
+	 * @return value between 0 and 1 You should convert to get 0% to 100%, just
+	 * similarity * 100.
+	 */
+	public static double sim(String s, String t, int k) {
+		Map<Character, Integer> hs = hash(s);
+		Map<Character, Integer> ht = hash(t);
+		Map<Character, Integer> intersec = getIntersec(hs, ht);
+
+		if (intersec.size() == 0) { // Hash intesection Filter
+			return 0.0d;
+		}
+
+		int i = 0;
+		double sumFreq = 0.0d;
+		double sim[] = new double[intersec.size()];
+		for (Character c : intersec.keySet()) {
+			if (i >= k) {
+				return sim[i - 1];
+			}
+			sumFreq += intersec.get(c).doubleValue();
+			sim[i] = sumFreq / ((double) (s.length() + t.length()));
+			i++;
+		}
+		return sim[sim.length - 1];
+	}
+
+	private static Map<Character, Integer> getIntersec(
+			Map<Character, Integer> hs, Map<Character, Integer> ht) {
 		Map<Character, Integer> intersec = new LinkedHashMap<Character, Integer>();
 
 		for (Character c : hs.keySet()) {
@@ -84,7 +112,8 @@ public class AndreMFKC {
 	 *            array
 	 * @return hashmap : Key = char, Value = num of occurrence
 	 */
-	private static HashMap<Character, Integer> countElementOcurrences(char[] array) {
+	private static HashMap<Character, Integer> countElementOcurrences(
+			char[] array) {
 
 		HashMap<Character, Integer> countMap = new HashMap<Character, Integer>();
 
@@ -105,9 +134,11 @@ public class AndreMFKC {
 	 *            (with key as character, value as number of occurrences)
 	 * @return sorted HashMap
 	 */
-	private static <K, V extends Comparable<? super V>> HashMap<K, V> descendingSortByValues(HashMap<K, V> map) {
+	private static <K, V extends Comparable<? super V>> HashMap<K, V> descendingSortByValues(
+			HashMap<K, V> map) {
 
-		List<Map.Entry<K, V>> list = new ArrayList<Map.Entry<K, V>>(map.entrySet());
+		List<Map.Entry<K, V>> list = new ArrayList<Map.Entry<K, V>>(
+				map.entrySet());
 		// Defined Custom Comparator here
 		Collections.sort(list, new Comparator<Map.Entry<K, V>>() {
 			public int compare(Map.Entry<K, V> o1, Map.Entry<K, V> o2) {
@@ -132,10 +163,12 @@ public class AndreMFKC {
 	 * @return Sorted HashMap with Char and frequencies.
 	 */
 	private static Map<Character, Integer> hash(String s) {
-		HashMap<Character, Integer> countMap = countElementOcurrences(s.toCharArray());
+		HashMap<Character, Integer> countMap = countElementOcurrences(s
+				.toCharArray());
 		// System.out.println(countMap);
 		Map<Character, Integer> map = descendingSortByValues(countMap);
 		// System.out.println(map);
+		
 		return map;
 	}
 }
