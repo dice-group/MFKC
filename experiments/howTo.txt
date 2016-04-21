@@ -1,0 +1,11 @@
+How go Limit GPUs:
+Windows 10:
+Ctrl+Shift+Esq (Task Manager)
+Go to "Details" tab.
+Select "eclipse.exe"
+Right button > set affinity
+Then choose how many CPU would like to use.
+
+To verify in java:
+int proc = Runtime.getRuntime().availableProcessors();
+System.out.println("Number of CPUs: " + proc);

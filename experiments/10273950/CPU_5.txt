@@ -1,0 +1,21 @@
+TotalTime NAIVE is: 28958
+Total pairs: 10273950
+TotalTime ANDRE_new is: 16578
+TotalTime (N+L+A) is: 15740
+TotalTime (L+A) is: 17629
+TotalTime (N+A) is: 19257
+TotalTime (A) is: 18894
+TotalTime (Parallel) is: 7871
+
+TotalTime JaroWinkler is: 9965
+TotalTime Jaccard is: 46523
+N=1139379
+L=2666653
+A=6467909
+Good=9
+AF_N=9134571
+AF_L=6467918
+Precision Filter N=0
+Precision Filter L=0
+*Threshold=1.0
+Number of CPUs: 5
