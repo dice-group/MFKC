@@ -10,9 +10,9 @@ public class Testing {
 		File ds = new File("dbPediaPlaces.tsv");
 		File dt = new File("linkedGeoPlaces_million.tsv");
 		int k=200;
-		double threshold=0.95d;
+		double threshold=1.0d;
 		//32=1,000 -  105=10,000 - 343=100,464 - 1249=1,001,642 - 3900=10,273,950
-		ExperimentMFKC.generateExperiment(ds, dt, 36000, true, k, threshold);
+		ExperimentMFKC.generateExperiment(ds, dt, 1249, true, k, threshold);
 		System.out.println("*Threshold="+threshold);
 	}
 	
@@ -90,13 +90,15 @@ public class Testing {
 	}
 	
 	public static void main(String[] args) {
-		//t1();
+		t1();
 		//t2();
 		//t3();
 		//t4();
 		//t5();
 		//t6();
 		//tParallelGPU();
-		tK();
+		// tK();
+		int proc = Runtime.getRuntime().availableProcessors();
+		System.out.println("Number of CPUs: " + proc);
 	}
 }
