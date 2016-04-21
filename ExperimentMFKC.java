@@ -196,6 +196,12 @@ public class ExperimentMFKC {
 			endTime = System.currentTimeMillis();
 			totalTime = endTime - startTime;
 			System.out.println("TotalTime (Parallel) is: " + totalTime);
+			
+//			startTime = System.currentTimeMillis();
+//			AndreMFKC_Parallel_File.SDF(dsA, dtA, threshold, k);
+//			endTime = System.currentTimeMillis();
+//			totalTime = endTime - startTime;
+//			System.out.println("TotalTime (Parallel_File) is: " + totalTime);
 
 			try {
 				startTime = System.currentTimeMillis();
@@ -210,6 +216,20 @@ public class ExperimentMFKC {
 			} catch (Exception e) {
 				System.err.println("Error JaroWinker:" + e.getMessage());
 			}
+			
+			try {
+				startTime = System.currentTimeMillis();
+				for (String s : ds) {
+					for (String t : dt) {
+						Jaccard.jaccard_coeffecient(s, t);
+					}
+				}
+				endTime = System.currentTimeMillis();
+				totalTime = endTime - startTime;
+				System.out.println("TotalTime Jaccard is: " + totalTime);
+			} catch (Exception e) {
+				System.err.println("Error Jaccard:" + e.getMessage());
+			}
 
 			System.out.println("N=" + AndreMFKC.N);
 			System.out.println("L=" + AndreMFKC.L);
@@ -217,9 +237,10 @@ public class ExperimentMFKC {
 			System.out.println("Good=" + AndreMFKC.good);
 			System.out.println("AF_N=" + AndreMFKC.AF_N);
 			System.out.println("AF_L=" + AndreMFKC.AF_L);
-			System.out.println("Precision Filter N=" + new BigDecimal(AndreMFKC.good / (double) AndreMFKC.AF_N));
-			System.out.println("Precision Filter L=" + new BigDecimal(AndreMFKC.good / (double) AndreMFKC.AF_L));
-
+			int total=AndreMFKC.N+AndreMFKC.L+AndreMFKC.A;
+			System.out.println("Precision Filter N=" + new BigDecimal((double) (AndreMFKC.N / total)));
+			System.out.println("Precision Filter L=" + new BigDecimal((double) (AndreMFKC.L / total)));
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
