@@ -1,6 +1,9 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,14 +13,22 @@ import java.util.Set;
 
 import org.apache.jena.riot.WebContent;
 
+import com.hp.hpl.jena.graph.impl.AllCapabilities;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP;
 import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP;
 
+import jdk.nashorn.internal.runtime.AllocationStrategy;
+
 public class ExperimentMFKC {
 
+	public static Map<String, String> hP = new HashMap<String, String>();
+	public static Map<String, String> hN = new HashMap<String, String>();
+	public static Map<String, String> hPsim = new HashMap<String, String>();
+	public static Map<String, String> hNSim = new HashMap<String, String>();
+	
 	public static Set<String> getLabels(File pFile, int limit) {
 		Set<String> sLabels = new LinkedHashSet<String>();
 		int count = 0;
@@ -189,6 +200,7 @@ public class ExperimentMFKC {
 			totalTime = endTime - startTime;
 			System.out.println("TotalTime (A) is: " + totalTime);
 
+			//cuInit(0);
 			String dsA[] = ds.toArray(new String[ds.size()]);
 			String dtA[] = dt.toArray(new String[dt.size()]);
 			startTime = System.currentTimeMillis();
@@ -397,5 +409,61 @@ public class ExperimentMFKC {
 		} catch (Exception e) {
 			System.err.println("Error JaroWinker:" + e.getMessage());
 		}
+	}
+
+	public static void generateExperiment(File goldFile) throws FileNotFoundException, UnsupportedEncodingException {
+		// Generate hP, hN  hPsim and hNsim 
+		generateData(goldFile);
+		
+	}
+
+	private static void generateData(File goldFile) throws FileNotFoundException, UnsupportedEncodingException {
+		Set<String> sHp = new HashSet<String>();
+		Set<String> sHn = new HashSet<String>();
+		String line;
+		try (BufferedReader br = new BufferedReader(new FileReader(goldFile))) {
+			while (((line = br.readLine()) != null)) {
+				String st [] = line.split("\t");
+				String s =  st[0];
+				String t = st[1];
+				
+				double simMFKC = AndreMFKC.sim(s, t, 1000000);
+				double jacard = Jaccard.jaccard_coeffecient(s, t);
+				double jaroWinkler = JaroWinkler.jaroWinkler(s, t);
+				//double edit = 
+				String allSim = s + "\t" + t + "\t" + simMFKC + "\t" + jacard + "\t" + jaroWinkler;
+				sHp.add(allSim);
+				hP.put(s, t);
+			}
+			generateFile(sHp, "p.tsv");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		hP.keySet().stream().forEach(key ->{
+			hP.values().stream().forEach(value ->{
+				String s =  key;
+				String t = value;
+
+				double simMFKC = AndreMFKC.sim(s, t, 1000000);
+				double jacard = Jaccard.jaccard_coeffecient(s, t);
+				double jaroWinkler = JaroWinkler.jaroWinkler(s, t);
+				//double edit = 
+				String allSim = s + "\t" + t + "\t" + simMFKC + "\t" + jacard + "\t" + jaroWinkler;
+				if(!sHp.contains(allSim)){
+					sHn.add(allSim);
+				}
+					
+			});
+		});
+		generateFile(sHn, "n.tsv");
+	}
+
+	private static void generateFile(Set<String> sHp, String fileName) throws FileNotFoundException, UnsupportedEncodingException {
+		PrintWriter writer = new PrintWriter(fileName, "UTF-8");
+		writer.println("s" + "\t" + "t" + "\t" + "MFKC" + "\t" + "Jaccard" + "\t" + "JaroWinkler");
+		for (String elem : sHp) {
+			writer.println(elem);
+		}
+		writer.close();
 	}
 }
