@@ -91,6 +91,9 @@ public class JaroWinkler {
 	    	int i = 0;
 	    	while (prefix_length < 3)
 	    	{
+	    		if(i >= Math.min(str1.length, str2.length))
+	    			break;
+	    		
 	    		if(str1[i] == str2[i])
 	    			prefix_length++;
 	    		else
