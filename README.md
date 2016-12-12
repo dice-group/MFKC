@@ -7,9 +7,14 @@ Pre-requisites:
 -Java 8+ (http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 -Jena API (https://jena.apache.org/download/index.cgi).
 
-Run the Main.java in order to see the results.
+Run the Main.java in the following classes in order to see the results.
 
-AndreMFKC.java is the implementation of the algorithm.
-AndreMFKC_Parallel.java is the parallel implementation using Java 8 resources.
-dbPediaPlaces.tsv is the dataset from DBpedia.
-linkedGeoPlaces_million.tsv is the dataset from linkedGeoData.
+* **MFKC.java** is the implementation of the algorithm.
+* **MFKC_Parallel.java** is the parallel implementation using Java 8 resources.
+* In **MFKC_Sep.java**, the filters are executed separately.
+* **ExperimentMFKC.java** contains all experiments.
+
+Datasets:
+
+* **dbPediaPlaces.tsv** is the dataset from DBpedia.
+* **linkedGeoPlaces_million.tsv** is the dataset from linkedGeoData.
