@@ -23,3 +23,9 @@ Datasets used:
 * **dbPediaPlaces.tsv** is the dataset from DBpedia
 * **linkedGeoPlaces_million.tsv** is the dataset from LinkedGeoData
 * **dbpedia_yago_labels_10k.tsv** contains label alignments - [download](https://s3.eu-central-1.amazonaws.com/tommaso-soru/files/dbpedia_yago_labels_10k.tsv)
+
+# Publication:
+This work was published as a [full paper](https://svn.aksw.org/papers/2017/ISWC_OM_MFKC/public.pdf) was published at [ISWC](https://iswc2017.semanticweb.org/) on the [Ontology Matching workshop](http://om2017.ontologymatching.org/).
+
+https://svn.aksw.org/papers/2017/ISWC_OM_MFKC/public.pdf
+
